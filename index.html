@@ -518,10 +518,13 @@ function switchTab(tab) {
     if (tab==='usuarios') renderUsuarios();
     if (tab==='archivos') loadArchivos();
 }
-
 // CUESTIONARIOS
-function getCuestionarios() { return JSON.parse(localStorage.getItem('pueblaCuestionarios')||'[]'); }
-function saveCuestionarios(data) { localStorage.setItem('pueblaCuestionarios', JSON.stringify(data)); }
+function getCuestionarios() {
+    return JSON.parse(localStorage.getItem('pueblaCuestionarios') || '[]');
+}
+function saveCuestionarios(data) {
+    localStorage.setItem('pueblaCuestionarios', JSON.stringify(data));
+}
 
 $('#cuestionario-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -559,29 +562,18 @@ $('#cuestionario-form').addEventListener('submit', function(e) {
     
     renderAnalytics();
     renderSolventaciones();
-});
-   // antes: currentUser?.role
-var isAdmin = currentUser && currentUser.role === 'admin';
-
-// antes: document.querySelector(...)?.click()
-var btn = document.querySelector('[data-tab="solventaciones"]');
-if (btn) btn.click();
-}
-    const all = getCuestionarios();  // <-- lee de 'pueblaCuestionarios'
-    all.unshift(data);
-    saveCuestionarios(all);  // <-- guarda donde Analytics mira
-    
-    e.target.reset();
-    
-    if (typeof showToast === 'function') {
-        showToast('Cuestionario guardado correctamente');
-    }
-    
-    // Actualiza las 3 vistas
-    renderAnalytics();
-    renderSolventaciones();
     renderUsuarios();
 });
+
+// CONTROL DE ROLES (solo admin ve analytics/solventaciones)
+function updateUIForRole() {
+    var isAdmin = currentUser && currentUser.role === 'admin';
+    ['analytics','solventaciones','usuarios','configurar'].forEach(function(tab){
+        var btn = document.querySelector('.tab-btn[data-tab="'+tab+'"]');
+        if (btn) btn.style.display = isAdmin ? '' : 'none';
+    });
+}
+
 // ANALYTICS
 function renderAnalytics() {
     const all = getCuestionarios();
