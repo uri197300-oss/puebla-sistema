@@ -523,41 +523,40 @@ function switchTab(tab) {
 function getCuestionarios() { return JSON.parse(localStorage.getItem('pueblaCuestionarios')||'[]'); }
 function saveCuestionarios(data) { localStorage.setItem('pueblaCuestionarios', JSON.stringify(data)); }
 
-$('#cuestionario-form').addEventListener('submit', e => {
+$('#cuestionario-form').addEventListener('submit', function(e){
     e.preventDefault();
+    function val(id){ var el=document.getElementById(id); return el ? el.value : ''; }
     
-    const val = id => document.getElementById(id)?.value || '';
-    
-    const data = {
+    var data = {
         id: Date.now().toString(),
         ejercicio: val('ejercicio'),
         folio: val('folio'),
         tipo: val('tipo'),
-        // 12 preguntas nuevas
-        p1: val('p1'),
-        p2: val('p2'),
-        p3: val('p3'),
-        p4: val('p4'),
-        p5: val('p5'),
-        p6: val('p6'),
-        p7: val('p7'),
-        p8: val('p8'),
-        p9: val('p9'),
-        p10: val('p10'),
-        p11: val('p11'),
-        p12: val('p12'),
-        usuario: currentUser.email,
-// Definir rol
-currentUser.role = (currentUser.email === 'uri197300@gmail.com') ? 'admin' : 'user';
-localStorage.setItem('pueblaUser', JSON.stringify(currentUser));
-
-// Ocultar pestañas si no es admin
-updateUIForRole();
-        dependencia: currentUser.dependencia,
+        p1: val('p1'), p2: val('p2'), p3: val('p3'), p4: val('p4'), p5: val('p5'),
+        p6: val('p6'), p7: val('p7'), p8: val('p8'), p9: val('p9'), p10: val('p10'),
+        p11: val('p11'), p12: val('p12'),
+        usuario: currentUser ? currentUser.email : '',
+        dependencia: currentUser ? currentUser.dependencia : '',
         fecha: new Date().toISOString(),
         estado: 'Enviado'
     };
     
+    var all = JSON.parse(localStorage.getItem('pueblaCuestionarios')||'[]');
+    all.unshift(data);
+    localStorage.setItem('pueblaCuestionarios', JSON.stringify(all));
+    
+    e.target.reset();
+    if (typeof showToast === 'function') showToast('Guardado');
+    renderAnalytics();
+    renderSolventaciones();
+});
+    function updateUIForRole() {
+    var isAdmin = currentUser && currentUser.role === 'admin';
+    ['analytics','solventaciones','usuarios','configurar'].forEach(function(tab){
+        var btn = document.querySelector('.tab-btn[data-tab="'+tab+'"]');
+        if(btn) btn.style.display = isAdmin ? '' : 'none';
+    });
+}
     const all = getCuestionarios();  // <-- lee de 'pueblaCuestionarios'
     all.unshift(data);
     saveCuestionarios(all);  // <-- guarda donde Analytics mira
