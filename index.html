@@ -815,6 +815,23 @@ async function uploadFile(file) {
 function loadInitialData() {
     renderAnalytics();
 }
+function updateUIForRole() {
+    const isAdmin = currentUser?.role === 'admin';
+    
+    // Ocultar botones de navegación
+    ['analytics', 'solventaciones', 'usuarios', 'configurar'].forEach(tab => {
+        const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+        if (btn) btn.style.display = isAdmin ? '' : 'none';
+    });
+    
+    // Si un usuario normal intenta entrar, regresarlo a Responder
+    if (!isAdmin) {
+        const currentTab = document.querySelector('.tab-btn.border-puebla-900')?.dataset.tab;
+        if (['analytics','solventaciones','usuarios','configurar'].includes(currentTab)) {
+            switchTab('responder');
+        }
+    }
+}
 
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
