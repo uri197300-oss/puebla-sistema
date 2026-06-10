@@ -565,14 +565,6 @@ $('#cuestionario-form').addEventListener('submit', function(e) {
     renderUsuarios();
 });
 
-// CONTROL DE ROLES (solo admin ve analytics/solventaciones)
-function updateUIForRole() {
-    var isAdmin = currentUser && currentUser.role === 'admin';
-    ['analytics','solventaciones','usuarios','configurar'].forEach(function(tab){
-        var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
-        if (btn) btn.style.display = isAdmin ? '' : 'none';
-    });
-}
 // ANALYTICS
 function renderAnalytics() {
     const all = getCuestionarios();
