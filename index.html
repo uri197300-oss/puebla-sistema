@@ -816,23 +816,28 @@ function loadInitialData() {
     renderAnalytics();
 }
 function updateUIForRole() {
-    const isAdmin = currentUser?.role === 'admin';
+    var isAdmin = currentUser && currentUser.role === 'admin';
     
-    // Ocultar botones de navegación
-    ['analytics', 'solventaciones', 'usuarios', 'configurar'].forEach(tab => {
-        const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    // Tabs que SOLO ve el admin
+    ['analytics','usuarios','configurar'].forEach(function(tab){
+        var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
         if (btn) btn.style.display = isAdmin ? '' : 'none';
     });
     
-    // Si un usuario normal intenta entrar, regresarlo a Responder
+    // Cuestionarios y Solventaciones: todos los ven
+    ['cuestionarios','solventaciones'].forEach(function(tab){
+        var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+        if (btn) btn.style.display = '';
+    });
+    
+    // Si no es admin y estaba en una pestaña prohibida, mándalo a Cuestionarios
     if (!isAdmin) {
-        const currentTab = document.querySelector('.tab-btn.border-puebla-900')?.dataset.tab;
-        if (['analytics','solventaciones','usuarios','configurar'].includes(currentTab)) {
-            switchTab('responder');
+        var activeTab = document.querySelector('.tab-btn.active');
+        if (activeTab && ['analytics','usuarios','configurar'].includes(activeTab.dataset.tab)) {
+            document.querySelector('.tab-btn[data-tab="cuestionarios"]').click();
         }
     }
 }
-
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
 </body>
