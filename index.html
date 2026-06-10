@@ -560,7 +560,7 @@ $('#cuestionario-form').addEventListener('submit', function(e) {
         alert('Guardado');
     }
     
-    renderAnalytics();
+       renderAnalytics();
     renderSolventaciones();
     renderUsuarios();
 });
@@ -569,7 +569,7 @@ $('#cuestionario-form').addEventListener('submit', function(e) {
 function updateUIForRole() {
     var isAdmin = currentUser && currentUser.role === 'admin';
     ['analytics','solventaciones','usuarios','configurar'].forEach(function(tab){
-        var btn = document.querySelector('.tab-btn[data-tab="'+tab+'"]');
+        var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
         if (btn) btn.style.display = isAdmin ? '' : 'none';
     });
 }
